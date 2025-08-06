@@ -2,32 +2,49 @@ package org.barberia.modelos;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Servicios")
-
 public class Servicios {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Integer id;
 
-    @NotBlank (message = "El nombre es requerido")
-    private  String nombre;
-    @NotBlank (message = "El tiempo estimado es requerido")
-    private Integer tiempoestimado;
-    @NotBlank (message = "El precio es requerido")
+    @NotBlank(message = "El nombre es requerido")
+    private String nombre;
+
+    @NotNull(message = "El tiempo estimado es requerido")
+    private Integer tiempoEstimado;
+
+    @NotNull(message = "El precio es requerido")
     private BigDecimal precio;
-    @NotBlank (message = "El estado es requerido")
-    private  String estadoservicio;
+
+    @NotBlank(message = "El estado es requerido")
+    private String estadoServicio;
+
+    // === Relación con Citas ===
+    @OneToMany(
+            mappedBy = "servicio",       // coincide con private Servicios servicio; en Citas
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Citas> citas = new ArrayList<>();
+
+    public Servicios() {}
+
+    // ——— Getters y Setters ———
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Integer id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getNombre() {
@@ -38,12 +55,12 @@ public class Servicios {
         this.nombre = nombre;
     }
 
-    public Integer getTiempoestimado() {
-        return tiempoestimado;
+    public Integer getTiempoEstimado() {
+        return tiempoEstimado;
     }
 
-    public void setTiempoestimado(Integer tiempoestimado) {
-        this.tiempoestimado = tiempoestimado;
+    public void setTiempoEstimado(Integer tiempoEstimado) {
+        this.tiempoEstimado = tiempoEstimado;
     }
 
     public BigDecimal getPrecio() {
@@ -54,12 +71,19 @@ public class Servicios {
         this.precio = precio;
     }
 
-    public String getEstadoservicio() {
-        return estadoservicio;
+    public String getEstadoServicio() {
+        return estadoServicio;
     }
 
-    public void setEstadoservicio(String estadoservicio) {
-        this.estadoservicio = estadoservicio;
+    public void setEstadoServicio(String estadoServicio) {
+        this.estadoServicio = estadoServicio;
+    }
+
+    public List<Citas> getCitas() {
+        return citas;
+    }
+
+    public void setCitas(List<Citas> citas) {
+        this.citas = citas;
     }
 }
-

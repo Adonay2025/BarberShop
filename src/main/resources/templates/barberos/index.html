@@ -1,0 +1,54 @@
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
+
+<div layout:fragment="content">
+    <!-- Mostrar mensaje de error -->
+    <div th:if="${error != null}">
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: '[[${error}]]',
+                icon: "error"
+            });
+        </script>
+    </div>
+
+    <h1>Listado de Barberos</h1>
+    <a th:href="@{/barberos/create}" class="btn btn-outline-primary">Nuevo Barbero</a>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Especialidad</th>
+            <th>Disponibilidad</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="barbero : ${barberos}">
+            <td th:text="${barbero.id}"></td>
+            <td th:text="${barbero.especialidad}"></td>
+            <td th:text="${barbero.disponibilidad}"></td>
+            <td>
+                <a th:href="@{/barberos/details/{id}(id=${barbero.id})}" class="btn btn-outline-secondary">Detalles</a>
+                <a th:href="@{/barberos/edit/{id}(id=${barbero.id})}" class="btn btn-outline-info">Editar</a>
+                <a th:href="@{/barberos/remove/{id}(id=${barbero.id})}" class="btn btn-outline-danger">Eliminar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Navegación de paginación -->
+    <nav aria-label="Page navigation example" th:if="${pageNumbers != null}">
+        <ul class="pagination">
+            <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+                <a class="page-link" th:href="@{|/barberos?page=${pageNumber}|}" th:text="${pageNumber}"></a>
+            </li>
+        </ul>
+    </nav>
+
+</div>
+

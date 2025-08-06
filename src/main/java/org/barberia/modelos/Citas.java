@@ -2,84 +2,102 @@ package org.barberia.modelos;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-
-import javax.xml.crypto.Data;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Citas")
-
 public class Citas {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Integer id;
 
-    @NotBlank (message = "Nombre del cliente")
-    private  Integer ClienteId;
-    @NotBlank (message = "Nombre del servicio")
-    private Integer ServicioId;
-    @NotBlank (message = "Nombre del barbero")
-    private  Integer  BarberoId;
-    @NotBlank (message =  "La fecha es requerida")
-    private LocalDateTime Fecha;
-    @NotBlank (message =  "Una nota es requerida")
-    private  String Notas;
-    @NotBlank (message =  "El estado es requerido")
-    private  String Estado;
+    // === Relación con Usuarios (cliente) ===
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private Usuarios usuario;
+
+    // === Relación con Servicios ===
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "servicio_id", nullable = false)
+    private Servicios servicio;
+
+    // === Relación con Barberos ===
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "barbero_id", nullable = false)
+    private Barberos barbero;
+
+    // Fecha de la cita
+    @NotNull(message = "La fecha es requerida")
+    private LocalDateTime fecha;
+
+    // Notas adicionales
+    @NotBlank(message = "Una nota es requerida")
+    private String notas;
+
+    // Estado de la cita (p.ej. “AGENDADA”, “CANCELADA”)
+    @NotBlank(message = "El estado es requerido")
+    private String estado;
+
+    // === Constructor vacío requerido por Hibernate ===
+    public Citas() {}
+
+    // ——— Getters y Setters ———
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Integer id) {
-        Id = id;
+        this.id = id;
     }
 
-    public Integer getClienteId() {
-        return ClienteId;
+    public Usuarios getUsuario() {
+        return usuario;
     }
 
-    public void setClienteId(Integer clienteId) {
-        ClienteId = clienteId;
+    public void setUsuario(Usuarios usuario) {
+        this.usuario = usuario;
     }
 
-    public Integer getServicioId() {
-        return ServicioId;
+    public Servicios getServicio() {
+        return servicio;
     }
 
-    public void setServicioId(Integer servicioId) {
-        ServicioId = servicioId;
+    public void setServicio(Servicios servicio) {
+        this.servicio = servicio;
     }
 
-    public Integer getBarberoId() {
-        return BarberoId;
+    public Barberos getBarbero() {
+        return barbero;
     }
 
-    public void setBarberoId(Integer barberoId) {
-        BarberoId = barberoId;
+    public void setBarbero(Barberos barbero) {
+        this.barbero = barbero;
     }
 
     public LocalDateTime getFecha() {
-        return Fecha;
+        return fecha;
     }
 
     public void setFecha(LocalDateTime fecha) {
-        Fecha = fecha;
+        this.fecha = fecha;
     }
 
     public String getNotas() {
-        return Notas;
+        return notas;
     }
 
     public void setNotas(String notas) {
-        Notas = notas;
+        this.notas = notas;
     }
 
     public String getEstado() {
-        return Estado;
+        return estado;
     }
 
     public void setEstado(String estado) {
-        Estado = estado;
+        this.estado = estado;
     }
 }

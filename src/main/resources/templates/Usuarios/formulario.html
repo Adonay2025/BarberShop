@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
+
+<div layout:fragment="content">
+
+    <div class="container mt-4">
+        <h2 class="mb-4" th:text="${usuario.id != null} ? 'Editar Usuario' : 'Crear Usuario'"></h2>
+
+        <form th:action="@{/usuarios/guardar}" th:object="${usuario}" method="post" class="needs-validation" novalidate>
+            <!-- ID oculto para edición -->
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="mb-3">
+                <label class="form-label">Nombre:</label>
+                <input type="text" th:field="*{nombre}" class="form-control" required />
+                <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Correo:</label>
+                <input type="email" th:field="*{correo}" class="form-control" required />
+                <div class="text-danger" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Contraseña:</label>
+                <!-- Cambiado a tipo 'text' para mostrar la contraseña -->
+                <input type="text" th:field="*{contrasena}" class="form-control" required />
+                <div class="text-danger" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Teléfono:</label>
+                <input type="text" th:field="*{telefono}" class="form-control" required />
+                <div class="text-danger" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Rol:</label>
+                <select th:field="*{role.id}" class="form-select" required>
+                    <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombrerol}">Rol</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a class="btn btn-secondary" th:href="@{/usuarios}">Cancelar</a>
+                <button type="submit" class="btn btn-primary" th:text="${usuario.id != null} ? 'Actualizar' : 'Guardar'"></button>
+            </div>
+        </form>
+    </div>
+
+
+</div>
+</html>
+
+
+
+
+

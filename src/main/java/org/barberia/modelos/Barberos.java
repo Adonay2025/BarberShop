@@ -16,6 +16,9 @@ public class Barberos {
     @NotBlank (message = "La disponibilidad es requerida")
     private String disponibilidad;
 
+    // === Constructor vacío requerido por Hibernate ===
+    public Barberos() {}
+
     public Integer getId() {
         return Id;
     }
