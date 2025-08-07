@@ -35,11 +35,7 @@
                             ✏️
                         </a>
 
-<!--                        <form th:action="@{'/usuarios/eliminar/' + ${usuario.id}}" method="post" style="display:inline;">-->
-<!--                              onsubmit="return confirm('¿Estás seguro que deseas eliminar este usuario?');">-->
-<!--                            <input type="hidden" name="_method" value="delete"/>-->
-<!--                            <button type="submit" class="btn btn-danger">🗑️ </button>-->
-<!--                        </form>-->
+
                         <form th:action="@{'/usuarios/eliminar/' + ${usuario.id}}"
                               method="post"
                               style="display:inline;"

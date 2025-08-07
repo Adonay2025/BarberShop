@@ -1,0 +1,87 @@
+
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
+
+<div layout:fragment="content">
+    <!-- Título dinámico -->
+    <h1 th:text="${barbero.id} != null ? 'Editar Barbero' : 'Crear nuevo Barbero'">Crear nuevo Barbero</h1>
+
+    <form th:action="@{/barberos/guardar}" th:object="${barbero}" method="post">
+
+        <!-- Incluimos el ID oculto para la edición -->
+        <input type="hidden" th:if="${barbero.id != null}" th:field="*{id}" />
+
+        <!-- Seleccionar Usuario -->
+        <div class="form-group">
+            <label>Seleccionar Usuario:</label>
+            <select id="usuarioSelect" name="usuario.id" class="form-control" required
+                    th:disabled="${barbero.id != null}"> <!-- Deshabilitado si es edición -->
+                <option value="">-- Selecciona un usuario --</option>
+                <option th:each="usuario : ${usuarios}"
+                        th:value="${usuario.id}"
+                        th:text="${usuario.nombre} + ' - ' + ${usuario.correo}"
+                        th:data-nombre="${usuario.nombre}"
+                        th:data-correo="${usuario.correo}"
+                        th:data-telefono="${usuario.telefono}"
+                        th:selected="${barbero.usuario != null and barbero.usuario.id == usuario.id}">
+                </option>
+            </select>
+
+            <!-- Campo oculto para enviar el ID del usuario si el select está deshabilitado -->
+            <input type="hidden" name="usuario.id"
+                   th:value="${barbero.usuario != null ? barbero.usuario.id : ''}"
+                   th:if="${barbero.id != null}" />
+        </div>
+
+        <!-- Campos autocompletados (readonly) -->
+        <div class="form-group">
+            <label>Nombre:</label>
+            <input type="text" id="nombre" class="form-control"
+                   th:value="${barbero.usuario != null ? barbero.usuario.nombre : ''}" readonly />
+        </div>
+        <div class="form-group">
+            <label>Correo:</label>
+            <input type="text" id="correo" class="form-control"
+                   th:value="${barbero.usuario != null ? barbero.usuario.correo : ''}" readonly />
+        </div>
+        <div class="form-group">
+            <label>Teléfono:</label>
+            <input type="text" id="telefono" class="form-control"
+                   th:value="${barbero.usuario != null ? barbero.usuario.telefono : ''}" readonly />
+        </div>
+
+        <!-- Campos editables -->
+        <div class="form-group">
+            <label>Especialidad:</label>
+            <input type="text" th:field="*{especialidad}" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label>Disponibilidad:</label>
+            <input type="text" th:field="*{disponibilidad}" class="form-control" required />
+        </div>
+
+        <!-- Botón dinámico -->
+        <button type="submit" class="btn btn-success"
+                th:text="${barbero.id} != null ? 'Actualizar' : 'Guardar'">Guardar</button>
+
+        <!-- Botón Cancelar -->
+        <a th:href="@{/barberos}" class="btn btn-secondary ml-2">Cancelar</a>
+    </form>
+
+    <!-- Script para autocompletar los datos del usuario cuando es nuevo -->
+    <script th:if="${barbero.id == null}">
+        const usuarioSelect = document.getElementById('usuarioSelect');
+        usuarioSelect.addEventListener('change', function () {
+            const selectedOption = usuarioSelect.options[usuarioSelect.selectedIndex];
+            document.getElementById('nombre').value = selectedOption.getAttribute('data-nombre') || '';
+            document.getElementById('correo').value = selectedOption.getAttribute('data-correo') || '';
+            document.getElementById('telefono').value = selectedOption.getAttribute('data-telefono') || '';
+        });
+    </script>
+</div>
+
+
+

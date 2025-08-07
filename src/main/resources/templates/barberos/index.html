@@ -1,3 +1,5 @@
+
+
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/_mainLayout}">
@@ -15,12 +17,15 @@
     </div>
 
     <h1>Listado de Barberos</h1>
-    <a th:href="@{/barberos/create}" class="btn btn-outline-primary">Nuevo Barbero</a>
+    <a th:href="@{/barberos/nuevo}" class="btn btn-outline-primary">Nuevo Barbero</a>
 
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>ID</th>
+<!--            <th>ID</th>-->
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
             <th>Especialidad</th>
             <th>Disponibilidad</th>
             <th>Acciones</th>
@@ -29,13 +34,20 @@
 
         <tbody>
         <tr th:each="barbero : ${barberos}">
-            <td th:text="${barbero.id}"></td>
+<!--            <td th:text="${barbero.id}"></td>-->
+            <td th:text="${barbero.usuario != null ? barbero.usuario.nombre : 'No asignado'}"></td>
+            <td th:text="${barbero.usuario != null ? barbero.usuario.correo : 'No asignado'}"></td>
+            <td th:text="${barbero.usuario != null ? barbero.usuario.telefono : 'No asignado'}"></td>
             <td th:text="${barbero.especialidad}"></td>
             <td th:text="${barbero.disponibilidad}"></td>
             <td>
-                <a th:href="@{/barberos/details/{id}(id=${barbero.id})}" class="btn btn-outline-secondary">Detalles</a>
-                <a th:href="@{/barberos/edit/{id}(id=${barbero.id})}" class="btn btn-outline-info">Editar</a>
-                <a th:href="@{/barberos/remove/{id}(id=${barbero.id})}" class="btn btn-outline-danger">Eliminar</a>
+
+                <a th:href="@{/barberos/editar/{id}(id=${barbero.id})}" class="btn btn-outline-info">✏️</a>
+
+                <a th:href="@{/barberos/eliminar/{id}(id=${barbero.id})}"
+                   onclick="return confirm('¿Estás segura de que deseas eliminar este barbero?');"
+                   class="btn btn-danger">🗑️</a>
+
             </td>
         </tr>
         </tbody>
@@ -49,6 +61,6 @@
             </li>
         </ul>
     </nav>
-
 </div>
+
 
