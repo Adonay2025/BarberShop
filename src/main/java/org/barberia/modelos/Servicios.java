@@ -27,6 +27,12 @@ public class Servicios {
     @NotBlank(message = "El estado es requerido")
     private String estadoServicio;
 
+    @Column(columnDefinition = "LONGTEXT")
+    private String imagenUrl;
+
+
+
+
     // === Relación con Citas ===
     @OneToMany(
             mappedBy = "servicio",       // coincide con private Servicios servicio; en Citas
@@ -86,4 +92,13 @@ public class Servicios {
     public void setCitas(List<Citas> citas) {
         this.citas = citas;
     }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
+
 }
