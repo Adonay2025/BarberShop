@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
+
+<div layout:fragment="content">
+
+    <div class="container mt-4">
+        <h1 th:text="${cita.id != null ? 'Editar Cita' : 'Nueva Cita'}"></h1>
+
+        <form th:action="@{/citas/guardar}" th:object="${cita}" method="post">
+
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="mb-3">
+                <label for="usuario" class="form-label">Cliente:</label>
+                <select class="form-select" th:field="*{usuario}" id="usuario" name="usuario" required>
+                    <option value="">Seleccione un cliente</option>
+                    <option th:each="cliente : ${clientes}"
+                            th:value="${cliente.id}"
+                            th:text="${cliente.nombre}"></option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="servicio" class="form-label">Servicio:</label>
+                <select class="form-select" th:field="*{servicio}" id="servicio" name="servicio" required>
+                    <option value="">Seleccione un servicio</option>
+                    <option th:each="servicio : ${servicios}"
+                            th:value="${servicio.id}"
+                            th:text="${servicio.nombre}"></option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="barbero" class="form-label">Barbero:</label>
+                <select class="form-select" th:field="*{barbero}" id="barbero" name="barbero" required>
+                    <option value="">Seleccione un barbero</option>
+                    <option th:each="barbero : ${barberos}"
+                            th:value="${barbero.id}"
+                            th:text="${barbero.usuario.nombre}"></option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="fecha" class="form-label">Fecha y Hora:</label>
+                <input type="datetime-local" class="form-control"
+                       th:value="${cita.fecha != null} ? ${#temporals.format(cita.fecha, 'yyyy-MM-dd') + 'T' + #temporals.format(cita.fecha, 'HH:mm')}"
+                       id="fecha" name="fecha" required />
+            </div>
+
+
+            <div class="mb-3">
+                <label for="notas" class="form-label">Notas:</label>
+                <textarea class="form-control" th:field="*{notas}" id="notas" rows="3" required
+                          oninvalid="this.setCustomValidity('Por favor, ingrese una nota')"
+                          oninput="this.setCustomValidity('')"></textarea>
+            </div>
+
+
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado:</label>
+                <select class="form-select" th:field="*{estado}" id="estado" name="estado" required>
+                    <option value="">Seleccione un estado</option>
+                    <option value="Pendiente" th:selected="${cita.estado == 'Pendiente'}">Pendiente</option>
+                    <option value="Confirmada" th:selected="${cita.estado == 'Confirmada'}">Confirmada</option>
+                    <option value="Cancelada" th:selected="${cita.estado == 'Cancelada'}">Cancelada</option>
+                    <option value="Completada" th:selected="${cita.estado == 'Completada'}">Completada</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a th:href="@{/citas}" class="btn btn-secondary ms-2">Volver a la lista</a>
+
+        </form>
+    </div>
+
+</div>
+</html>
