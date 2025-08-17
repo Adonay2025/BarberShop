@@ -18,6 +18,9 @@ public interface IUsuariosService {
     Usuarios createOEditar(Usuarios usuarios);
 
     void eliminarPorId(Integer id);
+
+    Usuarios buscarPorCorreo(String correo);
+
 }
 
 

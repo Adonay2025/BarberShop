@@ -33,7 +33,7 @@ public class Citas {
     private LocalDateTime fecha;
 
     // Notas adicionales
-    @NotBlank(message = "Una nota es requerida")
+
     private String notas;
 
     // Estado de la cita (p.ej. “AGENDADA”, “CANCELADA”)

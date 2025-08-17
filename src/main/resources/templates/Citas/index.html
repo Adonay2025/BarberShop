@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/_mainLayout}">
 
 <div layout:fragment="content">
@@ -15,12 +16,12 @@
       <table class="table table-bordered table-striped">
         <thead class="thead-dark">
         <tr>
-
           <th>Cliente</th>
           <th>Servicio</th>
           <th>Barbero</th>
           <th>Fecha</th>
           <th>Hora</th>
+          <th>Estado</th> <!-- Nueva columna -->
           <th>Acciones</th>
         </tr>
         </thead>
@@ -31,21 +32,24 @@
           <td th:text="${cita.barbero.usuario.nombre}"></td>
           <td th:text="${#temporals.format(cita.fecha, 'dd/MM/yyyy')}"></td>
           <td th:text="${#temporals.format(cita.fecha, 'HH:mm')}"></td>
-          <td>
-            <a class="btn btn-sm btn-warning"
-               th:href="@{'/citas/editar/' + ${cita.id}}">
-              ✏️
-            </a>
-            <a class="btn btn-danger btn-sm"
-               th:href="@{'/citas/eliminar/' + ${cita.id}}"
-               onclick="return confirm('¿Seguro que quieres eliminar esta cita?');">
+          <td th:text="${cita.estado}"></td> <!-- Mostrar estado -->
+
+
+
+          <td> <a class="btn btn-sm btn-warning" th:href="@{/citas/editar/{id}(id=${cita.id})}"> ✏️ </a> <!-- Botón eliminar visible solo para administrador -->
+
+            <a class="btn btn-danger btn-sm" th:href="@{/citas/eliminar/{id}(id=${cita.id})}" onclick="return confirm('¿Seguro que quieres eliminar esta cita?');" sec:authorize="hasRole('administrador')">
               🗑️
             </a>
+
+          </td>
+            </sec:authorize>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
+
   </div>
 
 </div>
