@@ -19,6 +19,8 @@ public interface ICitasRepository extends JpaRepository<Citas, Integer> {
 
     List<Citas> findByUsuario_Correo(String correo);
 
+    List<Citas> findByBarberoId(Integer barberoId);
+
     List<Citas> findByBarbero_IdAndFechaBetween(Integer barberoId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 }
 

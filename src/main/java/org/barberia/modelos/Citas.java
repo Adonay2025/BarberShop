@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
+
 
 @Entity
 @Table(name = "Citas")
@@ -30,6 +32,7 @@ public class Citas {
 
     // Fecha de la cita
     @NotNull(message = "La fecha es requerida")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime fecha;
 
     // Notas adicionales

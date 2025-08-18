@@ -1,4 +1,227 @@
 
+<!--<!DOCTYPE html>-->
+<!--<html lang="es"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"-->
+<!--      layout:decorate="~{layouts/_mainLayout}">-->
+
+<!--<head>-->
+<!--    &lt;!&ndash; FullCalendar CSS y JS &ndash;&gt;-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet"/>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/es.js"></script>-->
+<!--</head>-->
+
+<!--<div layout:fragment="content">-->
+
+<!--    <div class="container mt-4">-->
+<!--        <h1 th:text="${cita.id != null ? 'Editar Cita' : 'Nueva Cita'}"></h1>-->
+
+<!--        <form th:action="@{/citas/guardar}" th:object="${cita}" method="post">-->
+
+<!--            <input type="hidden" th:field="*{id}"/>-->
+
+<!--            <div class="mb-3">-->
+<!--                <label for="usuario" class="form-label">Cliente:</label>-->
+<!--                <select class="form-select" th:field="*{usuario}" id="usuario" name="usuario" required>-->
+<!--                    <option value="">Seleccione un cliente</option>-->
+<!--                    <option th:each="cliente : ${clientes}"-->
+<!--                            th:value="${cliente.id}"-->
+<!--                            th:text="${cliente.nombre}"></option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            <div class="mb-3">-->
+<!--                <label for="servicio" class="form-label">Servicio:</label>-->
+<!--                <select class="form-select" th:field="*{servicio}" id="servicio" name="servicio" required>-->
+<!--                    <option value="">Seleccione un servicio</option>-->
+<!--                    <option th:each="servicio : ${servicios}"-->
+<!--                            th:value="${servicio.id}"-->
+<!--                            th:text="${servicio.nombre}"></option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            <div class="mb-3">-->
+<!--                <label for="barbero" class="form-label">Barbero:</label>-->
+<!--                <select class="form-select" th:field="*{barbero}" id="barbero" name="barbero" required>-->
+<!--                    <option value="">Seleccione un barbero</option>-->
+<!--                    <option th:each="barbero : ${barberos}"-->
+<!--                            th:value="${barbero.id}"-->
+<!--                            th:text="${barbero.usuario.nombre}"></option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            <div class="mb-3">-->
+<!--                <label for="fecha" class="form-label">Fecha y Hora:</label>-->
+<!--                <input type="datetime-local" class="form-control"-->
+<!--                       th:value="${cita.fecha != null} ? ${#temporals.format(cita.fecha, 'yyyy-MM-dd') + 'T' + #temporals.format(cita.fecha, 'HH:mm')}"-->
+<!--                       id="fecha" name="fecha" required />-->
+
+
+<!--            </div>-->
+
+
+<!--            <div class="mb-3">-->
+<!--                <label for="notas" class="form-label">Notas:</label>-->
+<!--                <textarea class="form-control" th:field="*{notas}" id="notas" rows="3"></textarea>-->
+<!--            </div>-->
+
+
+<!--            <div class="mb-3">-->
+<!--                <label for="estado" class="form-label">Estado:</label>-->
+
+<!--                <select class="form-select" th:field="*{estado}" id="estado" name="estado" required>-->
+
+<!--                    &lt;!&ndash; Si es CLIENTE &ndash;&gt;-->
+<!--                    <th:block sec:authorize="hasRole('cliente')">-->
+<!--                        <th:block th:if="${esNuevo}">-->
+<!--                            <option value="Pendiente" selected>Pendiente</option>-->
+<!--                        </th:block>-->
+<!--                        <th:block th:unless="${esNuevo}">-->
+<!--                            <option value="Pendiente" th:selected="${cita.estado == 'Pendiente'}">Pendiente</option>-->
+<!--                            <option value="Cancelada" th:selected="${cita.estado == 'Cancelada'}">Cancelada</option>-->
+<!--                        </th:block>-->
+<!--                    </th:block>-->
+
+<!--                    &lt;!&ndash; Si es BARBERO o ADMIN &ndash;&gt;-->
+<!--                    <th:block sec:authorize="hasAnyRole('barbero', 'administrador')">-->
+<!--                        <option value="Pendiente" th:selected="${cita.estado == 'Pendiente'}">Pendiente</option>-->
+<!--                        <option value="Confirmada" th:selected="${cita.estado == 'Confirmada'}">Confirmada</option>-->
+<!--                        <option value="Cancelada" th:selected="${cita.estado == 'Cancelada'}">Cancelada</option>-->
+<!--                        <option value="Completada" th:selected="${cita.estado == 'Completada'}">Completada</option>-->
+<!--                    </th:block>-->
+
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            <button type="submit" class="btn btn-primary">Guardar</button>-->
+<!--            <a th:href="@{/citas}" class="btn btn-secondary ms-2">Volver a la lista</a>-->
+
+<!--        </form>-->
+<!--    </div>-->
+
+<!--</div>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="es"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"-->
+<!--      layout:decorate="~{layouts/_mainLayout}">-->
+
+<!--<div layout:fragment="content">-->
+<!--    <div class="container mt-4">-->
+<!--        <h1 th:text="${cita.id != null ? 'Editar Cita' : 'Nueva Cita'}"></h1>-->
+
+<!--        <form th:action="@{/citas/guardar}" th:object="${cita}" method="post">-->
+<!--            <input type="hidden" th:field="*{id}"/>-->
+
+<!--            &lt;!&ndash; Cliente &ndash;&gt;-->
+<!--            <div class="mb-3">-->
+<!--                <label>Cliente:</label>-->
+<!--                <span th:if="${#authorization.expression('hasRole(''barbero'')')}"-->
+<!--                      th:text="${cita.usuario.nombre}"></span>-->
+<!--                <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}"-->
+<!--                       th:field="*{usuario}"/>-->
+<!--                <select class="form-select" th:if="${#authorization.expression('!hasRole(''barbero'')')}"-->
+<!--                        th:field="*{usuario}" required>-->
+<!--                    <option value="">Seleccione un cliente</option>-->
+<!--                    <option th:each="cliente : ${clientes}"-->
+<!--                            th:value="${cliente.id}"-->
+<!--                            th:text="${cliente.nombre}"-->
+<!--                            th:selected="${cliente.id == cita.usuario.id}"></option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Servicio &ndash;&gt;-->
+<!--            <div class="mb-3">-->
+<!--                <label>Servicio:</label>-->
+<!--                <span th:if="${#authorization.expression('hasRole(''barbero'')')}"-->
+<!--                      th:text="${cita.servicio.nombre}"></span>-->
+<!--                <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}"-->
+<!--                       th:field="*{servicio}"/>-->
+<!--                <select class="form-select" th:if="${#authorization.expression('!hasRole(''barbero'')')}"-->
+<!--                        th:field="*{servicio}" required>-->
+<!--                    <option value="">Seleccione un servicio</option>-->
+<!--                    <option th:each="servicio : ${servicios}"-->
+<!--                            th:value="${servicio.id}"-->
+<!--                            th:text="${servicio.nombre}"-->
+<!--                            th:selected="${servicio.id == cita.servicio.id}"></option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Barbero &ndash;&gt;-->
+<!--            <div class="mb-3">-->
+<!--                <label>Barbero:</label>-->
+<!--                <span th:if="${#authorization.expression('hasRole(''barbero'')')}"-->
+<!--                      th:text="${cita.barbero.usuario.nombre}"></span>-->
+<!--                <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}"-->
+<!--                       th:field="*{barbero}"/>-->
+<!--                <select class="form-select" th:if="${#authorization.expression('!hasRole(''barbero'')')}"-->
+<!--                        th:field="*{barbero}" required>-->
+<!--                    <option value="">Seleccione un barbero</option>-->
+<!--                    <option th:each="barbero : ${barberos}"-->
+<!--                            th:value="${barbero.id}"-->
+<!--                            th:text="${barbero.usuario.nombre}"-->
+<!--                            th:selected="${barbero.id == cita.barbero.id}"></option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Fecha y Hora &ndash;&gt;-->
+<!--            <div class="mb-3">-->
+<!--                <label>Fecha y Hora:</label>-->
+
+<!--                &lt;!&ndash; Admin y Cliente &ndash;&gt;-->
+<!--                <input type="datetime-local" class="form-control"-->
+<!--                       th:if="${#authorization.expression('!hasRole(''barbero'')')}"-->
+<!--                       th:field="*{fecha}" required/>-->
+
+<!--                &lt;!&ndash; Barbero (solo lectura) &ndash;&gt;-->
+<!--                <span th:if="${#authorization.expression('hasRole(''barbero'')')}"-->
+<!--                      th:text="${#temporals.format(cita.fecha, 'dd/MM/yyyy HH:mm')}"></span>-->
+<!--                <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}"-->
+<!--                       th:field="*{fecha}"/>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Notas &ndash;&gt;-->
+<!--            <div class="mb-3">-->
+<!--                <label>Notas:</label>-->
+<!--                <textarea class="form-control" th:field="*{notas}" rows="3"-->
+<!--                          th:attr="readonly=${#authorization.expression('hasRole(''barbero'')')}"></textarea>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Estado &ndash;&gt;-->
+<!--            <div class="mb-3">-->
+<!--                <label>Estado:</label>-->
+<!--                <select class="form-select" th:field="*{estado}" required>-->
+<!--                    <th:block sec:authorize="hasRole('cliente')">-->
+<!--                        <th:block th:if="${esNuevo}">-->
+<!--                            <option value="Pendiente" selected>Pendiente</option>-->
+<!--                        </th:block>-->
+<!--                        <th:block th:unless="${esNuevo}">-->
+<!--                            <option value="Pendiente" th:selected="${cita.estado == 'Pendiente'}">Pendiente</option>-->
+<!--                            <option value="Cancelada" th:selected="${cita.estado == 'Cancelada'}">Cancelada</option>-->
+<!--                        </th:block>-->
+<!--                    </th:block>-->
+
+<!--                    <th:block sec:authorize="hasAnyRole('barbero','administrador')">-->
+<!--                        <option value="Pendiente" th:selected="${cita.estado == 'Pendiente'}">Pendiente</option>-->
+<!--                        <option value="Confirmada" th:selected="${cita.estado == 'Confirmada'}">Confirmada</option>-->
+<!--                        <option value="Cancelada" th:selected="${cita.estado == 'Cancelada'}">Cancelada</option>-->
+<!--                        <option value="Completada" th:selected="${cita.estado == 'Completada'}">Completada</option>-->
+<!--                    </th:block>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            <button type="submit" class="btn btn-primary">Guardar</button>-->
+<!--            <a th:href="@{/citas}" class="btn btn-secondary ms-2">Volver a la lista</a>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</div>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
@@ -7,71 +230,98 @@
       layout:decorate="~{layouts/_mainLayout}">
 
 <head>
-    <!-- FullCalendar CSS y JS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/es.js"></script>
 </head>
 
 <div layout:fragment="content">
-
     <div class="container mt-4">
         <h1 th:text="${cita.id != null ? 'Editar Cita' : 'Nueva Cita'}"></h1>
 
         <form th:action="@{/citas/guardar}" th:object="${cita}" method="post">
-
             <input type="hidden" th:field="*{id}"/>
 
+            <!-- Cliente -->
             <div class="mb-3">
-                <label for="usuario" class="form-label">Cliente:</label>
-                <select class="form-select" th:field="*{usuario}" id="usuario" name="usuario" required>
+                <label class="form-label">Cliente:</label>
+                <span th:if="${#authorization.expression('hasRole(''barbero'')')}"
+                      th:text="${cita.usuario != null ? cita.usuario.nombre : ''}"></span>
+                <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}"
+                       th:field="*{usuario.id}"/>
+
+                <select class="form-select" th:if="${#authorization.expression('!hasRole(''barbero'')')}"
+                        th:field="*{usuario}" id="usuario" name="usuario" required>
                     <option value="">Seleccione un cliente</option>
                     <option th:each="cliente : ${clientes}"
                             th:value="${cliente.id}"
-                            th:text="${cliente.nombre}"></option>
+                            th:text="${cliente.nombre}"
+                            th:selected="${cita.usuario != null ? cliente.id == cita.usuario.id : false}">
+                    </option>
                 </select>
             </div>
 
+            <!-- Servicio -->
             <div class="mb-3">
-                <label for="servicio" class="form-label">Servicio:</label>
-                <select class="form-select" th:field="*{servicio}" id="servicio" name="servicio" required>
+                <label class="form-label">Servicio:</label>
+                <span th:if="${#authorization.expression('hasRole(''barbero'')')}"
+                      th:text="${cita.servicio != null ? cita.servicio.nombre : ''}"></span>
+                <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}"
+                       th:field="*{servicio.id}"/>
+
+                <select class="form-select" th:if="${#authorization.expression('!hasRole(''barbero'')')}"
+                        th:field="*{servicio}" id="servicio" name="servicio" required>
                     <option value="">Seleccione un servicio</option>
                     <option th:each="servicio : ${servicios}"
                             th:value="${servicio.id}"
-                            th:text="${servicio.nombre}"></option>
+                            th:text="${servicio.nombre}"
+                            th:selected="${cita.servicio != null ? servicio.id == cita.servicio.id : false}">
+                    </option>
                 </select>
             </div>
 
+            <!-- Barbero -->
             <div class="mb-3">
-                <label for="barbero" class="form-label">Barbero:</label>
-                <select class="form-select" th:field="*{barbero}" id="barbero" name="barbero" required>
+                <label class="form-label">Barbero:</label>
+                <span th:if="${#authorization.expression('hasRole(''barbero'')')}"
+                      th:text="${cita.barbero != null ? cita.barbero.usuario.nombre : ''}"></span>
+                <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}"
+                       th:field="*{barbero.id}"/>
+
+                <select class="form-select" th:if="${#authorization.expression('!hasRole(''barbero'')')}"
+                        th:field="*{barbero}" id="barbero" name="barbero" required>
                     <option value="">Seleccione un barbero</option>
                     <option th:each="barbero : ${barberos}"
                             th:value="${barbero.id}"
-                            th:text="${barbero.usuario.nombre}"></option>
+                            th:text="${barbero.usuario.nombre}"
+                            th:selected="${cita.barbero != null ? barbero.id == cita.barbero.id : false}">
+                    </option>
                 </select>
             </div>
 
+            <!-- Fecha y hora -->
             <div class="mb-3">
-                <label for="fecha" class="form-label">Fecha y Hora:</label>
+                <label class="form-label">Fecha y Hora:</label>
                 <input type="datetime-local" class="form-control"
-                       th:value="${cita.fecha != null} ? ${#temporals.format(cita.fecha, 'yyyy-MM-dd') + 'T' + #temporals.format(cita.fecha, 'HH:mm')}"
-                       id="fecha" name="fecha" required />
+                       th:if="${#authorization.expression('!hasRole(''barbero'')')}"
+                       th:field="*{fecha}" required />
+                <span th:if="${#authorization.expression('hasRole(''barbero'')')}"
+                      th:text="${cita.fecha != null ? #temporals.format(cita.fecha, 'dd/MM/yyyy HH:mm') : ''}"></span>
+                <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}"
+                       th:field="*{fecha}"/>
             </div>
 
-
+            <!-- Notas -->
             <div class="mb-3">
-                <label for="notas" class="form-label">Notas:</label>
-                <textarea class="form-control" th:field="*{notas}" id="notas" rows="3"></textarea>
+                <label class="form-label">Notas:</label>
+                <textarea class="form-control" th:field="*{notas}" id="notas" rows="3"
+                          th:attr="readonly=${#authorization.expression('hasRole(''barbero'')')}"></textarea>
             </div>
 
-
+            <!-- Estado -->
             <div class="mb-3">
                 <label for="estado" class="form-label">Estado:</label>
-
                 <select class="form-select" th:field="*{estado}" id="estado" name="estado" required>
-
-                    <!-- Si es CLIENTE -->
                     <th:block sec:authorize="hasRole('cliente')">
                         <th:block th:if="${esNuevo}">
                             <option value="Pendiente" selected>Pendiente</option>
@@ -82,24 +332,19 @@
                         </th:block>
                     </th:block>
 
-                    <!-- Si es BARBERO o ADMIN -->
                     <th:block sec:authorize="hasAnyRole('barbero', 'administrador')">
                         <option value="Pendiente" th:selected="${cita.estado == 'Pendiente'}">Pendiente</option>
                         <option value="Confirmada" th:selected="${cita.estado == 'Confirmada'}">Confirmada</option>
                         <option value="Cancelada" th:selected="${cita.estado == 'Cancelada'}">Cancelada</option>
                         <option value="Completada" th:selected="${cita.estado == 'Completada'}">Completada</option>
                     </th:block>
-
                 </select>
             </div>
 
             <button type="submit" class="btn btn-primary">Guardar</button>
             <a th:href="@{/citas}" class="btn btn-secondary ms-2">Volver a la lista</a>
-
         </form>
     </div>
-
 </div>
 </html>
-
 

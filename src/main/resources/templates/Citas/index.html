@@ -9,7 +9,12 @@
   <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2>Lista de Citas</h2>
-      <a class="btn btn-primary" th:href="@{/citas/nuevo}">Nueva Cita</a>
+<!--      <a class="btn btn-primary" th:href="@{/citas/nuevo}">Nueva Cita</a>-->
+      <a class="btn btn-primary" th:href="@{/citas/nuevo}" sec:authorize="hasAnyRole('cliente','administrador')">
+        Nueva Cita
+      </a>
+
+
     </div>
 
     <div class="table-responsive">
@@ -36,14 +41,29 @@
 
 
 
-          <td> <a class="btn btn-sm btn-warning" th:href="@{/citas/editar/{id}(id=${cita.id})}"> ✏️ </a> <!-- Botón eliminar visible solo para administrador -->
+<!--          <td> <a class="btn btn-sm btn-warning" th:href="@{/citas/editar/{id}(id=${cita.id})}"> ✏️ </a> &lt;!&ndash; Botón eliminar visible solo para administrador &ndash;&gt;-->
 
-            <a class="btn btn-danger btn-sm" th:href="@{/citas/eliminar/{id}(id=${cita.id})}" onclick="return confirm('¿Seguro que quieres eliminar esta cita?');" sec:authorize="hasRole('administrador')">
+<!--          <a class="btn btn-danger btn-sm" th:href="@{/citas/eliminar/{id}(id=${cita.id})}" onclick="return confirm('¿Seguro que quieres eliminar esta cita?');" sec:authorize="hasRole('administrador')">-->
+<!--              🗑️-->
+<!--            </a>-->
+
+<!--          </td>-->
+          <td>
+            <!-- Editar -->
+            <a class="btn btn-sm btn-warning"
+               th:href="@{/citas/editar/{id}(id=${cita.id})}"
+               sec:authorize="hasAnyRole('cliente','barbero','administrador')">✏️</a>
+
+            <!-- Eliminar -->
+            <a class="btn btn-danger btn-sm"
+               th:href="@{/citas/eliminar/{id}(id=${cita.id})}"
+               onclick="return confirm('¿Seguro que quieres eliminar esta cita?');"
+               sec:authorize="hasRole('administrador')">
               🗑️
             </a>
-
           </td>
-            </sec:authorize>
+
+          </sec:authorize>
           </td>
         </tr>
         </tbody>
