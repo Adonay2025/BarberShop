@@ -41,20 +41,26 @@
 
 
 
-<!--          <td> <a class="btn btn-sm btn-warning" th:href="@{/citas/editar/{id}(id=${cita.id})}"> ✏️ </a> &lt;!&ndash; Botón eliminar visible solo para administrador &ndash;&gt;-->
-
-<!--          <a class="btn btn-danger btn-sm" th:href="@{/citas/eliminar/{id}(id=${cita.id})}" onclick="return confirm('¿Seguro que quieres eliminar esta cita?');" sec:authorize="hasRole('administrador')">-->
-<!--              🗑️-->
-<!--            </a>-->
-
-<!--          </td>-->
           <td>
-            <!-- Editar -->
-            <a class="btn btn-sm btn-warning"
-               th:href="@{/citas/editar/{id}(id=${cita.id})}"
-               sec:authorize="hasAnyRole('cliente','barbero','administrador')">✏️</a>
+            <!-- Si la cita está Cancelada y el usuario es CLIENTE -->
+            <th:block th:if="${cita.estado == 'Cancelada'}" sec:authorize="hasRole('cliente')">
+              <button class="btn btn-sm btn-secondary" disabled>✏️</button>
+            </th:block>
 
-            <!-- Eliminar -->
+            <!-- Si la cita está Cancelada y el usuario es ADMINISTRADOR o BARBERO -->
+            <th:block th:if="${cita.estado == 'Cancelada'}" sec:authorize="hasAnyRole('barbero','administrador')">
+              <a class="btn btn-sm btn-warning"
+                 th:href="@{/citas/editar/{id}(id=${cita.id})}">✏️</a>
+            </th:block>
+
+            <!-- Si la cita NO está Cancelada (todos pueden editar según su rol) -->
+            <th:block th:if="${cita.estado != 'Cancelada'}"
+                      sec:authorize="hasAnyRole('cliente','barbero','administrador')">
+              <a class="btn btn-sm btn-warning"
+                 th:href="@{/citas/editar/{id}(id=${cita.id})}">✏️</a>
+            </th:block>
+
+            <!-- Eliminar (solo admin) -->
             <a class="btn btn-danger btn-sm"
                th:href="@{/citas/eliminar/{id}(id=${cita.id})}"
                onclick="return confirm('¿Seguro que quieres eliminar esta cita?');"
@@ -62,6 +68,8 @@
               🗑️
             </a>
           </td>
+
+          </script>
 
           </sec:authorize>
           </td>
@@ -74,3 +82,9 @@
 
 </div>
 </html>
+
+
+
+
+
+
