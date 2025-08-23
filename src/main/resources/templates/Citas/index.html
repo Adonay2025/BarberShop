@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -9,7 +10,7 @@
   <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2>Lista de Citas</h2>
-<!--      <a class="btn btn-primary" th:href="@{/citas/nuevo}">Nueva Cita</a>-->
+      <!--      <a class="btn btn-primary" th:href="@{/citas/nuevo}">Nueva Cita</a>-->
       <a class="btn btn-primary" th:href="@{/citas/nuevo}" sec:authorize="hasAnyRole('cliente','administrador')">
         Nueva Cita
       </a>
@@ -25,7 +26,8 @@
           <th>Servicio</th>
           <th>Barbero</th>
           <th>Fecha</th>
-          <th>Hora</th>
+          <th>Hora Inicio</th>
+          <th>Hora Fin</th>
           <th>Estado</th> <!-- Nueva columna -->
           <th>Acciones</th>
         </tr>
@@ -36,10 +38,9 @@
           <td th:text="${cita.servicio.nombre}"></td>
           <td th:text="${cita.barbero.usuario.nombre}"></td>
           <td th:text="${#temporals.format(cita.fecha, 'dd/MM/yyyy')}"></td>
-          <td th:text="${#temporals.format(cita.fecha, 'HH:mm')}"></td>
+          <td th:text="${cita.horaInicio != null ? #temporals.format(cita.horaInicio, 'HH:mm') : ''}"></td>
+          <td th:text="${cita.horaFin != null ? #temporals.format(cita.horaFin, 'HH:mm') : ''}"></td>
           <td th:text="${cita.estado}"></td> <!-- Mostrar estado -->
-
-
 
           <td>
             <!-- Si la cita está Cancelada y el usuario es CLIENTE -->

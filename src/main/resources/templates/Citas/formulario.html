@@ -1,7 +1,4 @@
 
-
-
-
 <!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
@@ -18,6 +15,11 @@
 <div layout:fragment="content">
     <div class="container mt-4">
         <h1 th:text="${cita.id != null ? 'Editar Cita' : 'Nueva Cita'}"></h1>
+
+        <!-- Mensaje de error cuando un cliente selecciona la misma hora que ya esta agendada-->
+        <div th:if="${errorMensaje}" class="alert alert-danger" role="alert" style="margin-bottom: 1rem;">
+            <strong>¡Error!</strong> <span th:text="${errorMensaje}"></span>
+        </div>
 
         <form th:action="@{/citas/guardar}" th:object="${cita}" method="post">
             <input type="hidden" th:field="*{id}"/>
@@ -79,17 +81,54 @@
                 </select>
             </div>
 
-            <!-- Fecha y hora -->
+            <!-- Fecha -->
             <div class="mb-3">
-                <label class="form-label">Fecha y Hora:</label>
-                <input type="datetime-local" class="form-control"
+                <label class="form-label">Fecha:</label>
+                <input type="date" class="form-control"
                        th:if="${#authorization.expression('!hasRole(''barbero'')')}"
                        th:field="*{fecha}" required />
                 <span th:if="${#authorization.expression('hasRole(''barbero'')')}"
-                      th:text="${cita.fecha != null ? #temporals.format(cita.fecha, 'dd/MM/yyyy HH:mm') : ''}"></span>
+                      th:text="${cita.fecha != null ? #temporals.format(cita.fecha, 'dd/MM/yyyy') : ''}"></span>
                 <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}"
                        th:field="*{fecha}"/>
             </div>
+
+            <!-- Horario -->
+            <div class="mb-3">
+                <label for="horario" class="form-label">Horario:</label>
+
+                <!-- Mostrar como texto para barbero -->
+                <span th:if="${#authorization.expression('hasRole(''barbero'')')}"
+                      th:text="${cita.horaInicioFormatted != null ?
+                   (cita.horaInicioFormatted == '08:00' ? '8am - 9am' :
+                    cita.horaInicioFormatted == '09:00' ? '9am - 10am' :
+                    cita.horaInicioFormatted == '10:00' ? '10am - 11am' :
+                    cita.horaInicioFormatted == '11:00' ? '11am - 12pm' :
+                    cita.horaInicioFormatted == '13:00' ? '1pm - 2pm' :
+                    cita.horaInicioFormatted == '14:00' ? '2pm - 3pm' :
+                    cita.horaInicioFormatted == '15:00' ? '3pm - 4pm' :
+                    cita.horaInicioFormatted == '16:00' ? '4pm - 5pm' : '') : ''}">
+    </span>
+
+                <!-- Campo oculto para enviar el valor -->
+                <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}" th:field="*{horaInicio}" />
+
+                <!-- Select editable para otros roles -->
+                <select class="form-select" th:if="${#authorization.expression('!hasRole(''barbero'')')}" th:field="*{horaInicio}" id="horario" required>
+                    <option value="">Seleccione un horario</option>
+                    <option value="08:00" th:selected="${cita.horaInicioFormatted == '08:00'}">8am - 9am</option>
+                    <option value="09:00" th:selected="${cita.horaInicioFormatted == '09:00'}">9am - 10am</option>
+                    <option value="10:00" th:selected="${cita.horaInicioFormatted == '10:00'}">10am - 11am</option>
+                    <option value="11:00" th:selected="${cita.horaInicioFormatted == '11:00'}">11am - 12pm</option>
+                    <option value="13:00" th:selected="${cita.horaInicioFormatted == '13:00'}">1pm - 2pm</option>
+                    <option value="14:00" th:selected="${cita.horaInicioFormatted == '14:00'}">2pm - 3pm</option>
+                    <option value="15:00" th:selected="${cita.horaInicioFormatted == '15:00'}">3pm - 4pm</option>
+                    <option value="16:00" th:selected="${cita.horaInicioFormatted == '16:00'}">4pm - 5pm</option>
+                </select>
+            </div>
+
+            <!-- Campo oculto para horaFin -->
+            <input type="hidden" th:field="*{horaFin}" id="horaFin" name="horaFin" />
 
             <!-- Notas -->
             <div class="mb-3">
@@ -102,7 +141,6 @@
             <div class="mb-3">
                 <label for="estado" class="form-label">Estado:</label>
                 <select class="form-select" th:field="*{estado}" name="estado" id="estado" required>
-                    <!-- Opciones para clientes -->
                     <th:block sec:authorize="hasRole('cliente')">
                         <th:block th:if="${esNuevo}">
                             <option value="Pendiente" selected>Pendiente</option>
@@ -112,8 +150,6 @@
                             <option value="Cancelada" th:selected="${cita.estado == 'Cancelada'}">Cancelada</option>
                         </th:block>
                     </th:block>
-
-                    <!-- Opciones para barbero/administrador -->
                     <th:block sec:authorize="hasAnyRole('barbero', 'administrador')">
                         <option value="Pendiente" th:selected="${cita.estado == 'Pendiente'}">Pendiente</option>
                         <option value="Confirmada" th:selected="${cita.estado == 'Confirmada'}">Confirmada</option>
@@ -128,7 +164,30 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const horaInicioSelect = document.getElementById('horario');
+        const horaFinInput = document.getElementById('horaFin');
+
+        function actualizarHoraFin() {
+            if (!horaInicioSelect.value) {
+                horaFinInput.value = '';
+                return;
+            }
+            const [hora, minutos] = horaInicioSelect.value.split(':').map(Number);
+            let horaFin = hora + 1;
+            if (horaFin >= 24) {
+                horaFin -= 24;
+            }
+            const horaFinStr = (horaFin < 10 ? '0' : '') + horaFin + ':' + (minutos < 10 ? '0' : '') + minutos;
+            horaFinInput.value = horaFinStr;
+        }
+
+        actualizarHoraFin(); // ✅ Lo llama al cargar
+        horaInicioSelect.addEventListener('change', actualizarHoraFin);
+    });
+</script>
+
 </html>
-
-
 

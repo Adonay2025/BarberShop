@@ -3,9 +3,10 @@ package org.barberia.modelos;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.LocalDate;  // Cambiado de LocalDateTime a LocalDate
+import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
-
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "Citas")
@@ -32,11 +33,20 @@ public class Citas {
 
     // Fecha de la cita
     @NotNull(message = "La fecha es requerida")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime fecha;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fecha;
+
+    // Hora de inicio de la cita
+    @NotNull(message = "La hora de inicio es requerida")
+    @Column(name = "hora_inicio")
+    private LocalTime horaInicio;
+
+    // Hora de fin de la cita
+    @NotNull(message = "La hora de fin es requerida")
+    @Column(name = "hora_fin")
+    private LocalTime horaFin;
 
     // Notas adicionales
-
     private String notas;
 
     // Estado de la cita (p.ej. “AGENDADA”, “CANCELADA”)
@@ -46,7 +56,7 @@ public class Citas {
     // === Constructor vacío requerido por Hibernate ===
     public Citas() {}
 
-    // ——— Getters y Setters ———
+    // === Getters y Setters ===
 
     public Integer getId() {
         return id;
@@ -80,12 +90,28 @@ public class Citas {
         this.barbero = barbero;
     }
 
-    public LocalDateTime getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDateTime fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
+    }
+
+    public LocalTime getHoraInicio() {
+        return horaInicio;
+    }
+
+    public void setHoraInicio(LocalTime horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public LocalTime getHoraFin() {
+        return horaFin;
+    }
+
+    public void setHoraFin(LocalTime horaFin) {
+        this.horaFin = horaFin;
     }
 
     public String getNotas() {
@@ -103,4 +129,12 @@ public class Citas {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+    public String getHoraInicioFormatted() {
+        return horaInicio != null ? horaInicio.format(DateTimeFormatter.ofPattern("HH:mm")) : "";
+    }
+
+    public String getHoraFinFormatted() {
+        return horaFin != null ? horaFin.format(DateTimeFormatter.ofPattern("HH:mm")) : "";
+    }
 }
+

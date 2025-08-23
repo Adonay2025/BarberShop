@@ -18,4 +18,7 @@ public interface ICitasService {
     Citas createOEditar(Citas citas);
 
     void eliminarPorId(Integer id);
+
+    // ✅ Agrega este método
+    Citas validarYGuardarCita(Citas cita);
 }

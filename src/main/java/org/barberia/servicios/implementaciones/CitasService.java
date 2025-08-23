@@ -22,7 +22,7 @@ public class CitasService implements ICitasService {
     }
     @Override
     public List<Citas> obtenerTodos() {
-            return citasRepository.findAll();
+        return citasRepository.findAll();
     }
 
     @Override
@@ -30,13 +30,42 @@ public class CitasService implements ICitasService {
         return citasRepository.findById(id);
     }
 
+
     @Override
-    public Citas createOEditar(Citas citas) {
-        return citasRepository.save(citas);
+    public Citas createOEditar(Citas cita) {
+        return validarYGuardarCita(cita);
     }
+
+
+    // ✅ NUEVO MÉTODO para evitar traslapes
+    public Citas validarYGuardarCita(Citas nuevaCita) {
+        List<Citas> citasExistentes = citasRepository.findByBarbero_IdAndFechaBetween(
+                nuevaCita.getBarbero().getId(),
+                nuevaCita.getFecha(),
+                nuevaCita.getFecha()
+        );
+
+        for (Citas citaExistente : citasExistentes) {
+            // Ignora la misma cita si estamos en modo edición
+            if (nuevaCita.getId() != null && nuevaCita.getId().equals(citaExistente.getId())) {
+                continue;
+            }
+
+            boolean seSolapa = !(nuevaCita.getHoraFin().compareTo(citaExistente.getHoraInicio()) <= 0 ||
+                    nuevaCita.getHoraInicio().compareTo(citaExistente.getHoraFin()) >= 0);
+
+            if (seSolapa) {
+                throw new IllegalArgumentException("El barbero ya tiene una cita en ese horario.");
+            }
+        }
+
+        return citasRepository.save(nuevaCita);
+    }
+
 
     @Override
     public void eliminarPorId(Integer id) {
-citasRepository.deleteById(id);
+        citasRepository.deleteById(id);
     }
 }
+
