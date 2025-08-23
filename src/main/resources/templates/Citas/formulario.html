@@ -111,7 +111,10 @@
     </span>
 
                 <!-- Campo oculto para enviar el valor -->
-                <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}" th:field="*{horaInicio}" />
+                <input type="hidden" th:if="${#authorization.expression('hasRole(''barbero'')')}"
+                       name="horaInicio"
+                       th:value="${#temporals.format(cita.horaInicio, 'HH:mm')}" />
+
 
                 <!-- Select editable para otros roles -->
                 <select class="form-select" th:if="${#authorization.expression('!hasRole(''barbero'')')}" th:field="*{horaInicio}" id="horario" required>
